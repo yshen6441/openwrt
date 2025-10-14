@@ -1,0 +1,41 @@
+From 0002-add-rv2-wifi-dts.patch
+From: you <you@example.com>
+Date: 2025-10-15 00:00:00 +0800
+Subject: [PATCH] target: add k1-x orangepi-rv2 SDIO Wi-Fi node (brcmfmac43456)
+
+---
+ target/linux/riscv64/dts/k1-x_orangepi-rv2-wifi.dts | 32 +++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+ create mode 100644 target/linux/riscv64/dts/k1-x_orangepi-rv2-wifi.dts
+
+--- a/0000
++++ b/target/linux/riscv64/dts/k1-x_orangepi-rv2-wifi.dts
+@@ -0,0 +1,32 @@
++/* DTS fragment to enable Broadcom AP6256 (bcm43456) on OrangePi RV2 (k1-x)
++ *
++ * Values are taken from user's provided k1-x_orangepi-rv2.dts:
++ *  - reset / reg-on GPIO: 67
++ *  - hostwake / irq GPIO:  66
++ *
++ * Source: user-supplied k1-x_orangepi-rv2.dts.  [oai_citation:1‡k1-x_orangepi-rv2.dts.txt](sediment://file_0000000005e861f992e763f4c6189e6f)
++ */
++/dts-v1/;
++
++&sdhci1 {
++    status = "okay";
++    keep-power-in-suspend;
++
++    brcmfmac_wifi: wifi@1 {
++        compatible = "brcm,bcm43456-fmac", "brcm,bcm4335-fmac";
++        reg = <1>;
++        /* use host-wake as irq-gpio so driver can detect wake events */
++        irq-gpios = <&gpio 66 GPIO_ACTIVE_HIGH>;
++        interrupts = <66 1>; /* gpio 66, flag 1 (level/high) */
++        /* reset / regulator on */
++        reset-gpios = <&gpio 67 GPIO_ACTIVE_HIGH>;
++        brcm,chipname = "brcmfmac43456-sdio";
++        status = "okay";
++    };
++};
++
++-- 
